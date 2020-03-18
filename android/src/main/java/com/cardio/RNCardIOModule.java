@@ -101,7 +101,7 @@ public class RNCardIOModule extends ReactContextBaseJavaModule implements Activi
 
   @Override
   public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-    if (requestCode != CARD_IO_SCAN) {
+    if (requestCode != CARD_IO_SCAN || promise == null) {
       return;
     }
     if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
