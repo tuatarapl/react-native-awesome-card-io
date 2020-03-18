@@ -101,25 +101,23 @@ public class RNCardIOModule extends ReactContextBaseJavaModule implements Activi
 
   @Override
   public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-    if (promise != null) {
-      if (requestCode != CARD_IO_SCAN) {
-        return;
-      }
-      if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
-        CreditCard scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
-        WritableMap res = Arguments.createMap();
-        res.putString("cardType", scanResult.getCardType().getDisplayName(data.getStringExtra(CardIOActivity.EXTRA_LANGUAGE_OR_LOCALE)));
-        res.putString("cardNumber", scanResult.cardNumber);
-        res.putString("redactedCardNumber", scanResult.getRedactedCardNumber());
-        res.putInt("expiryMonth", scanResult.expiryMonth);
-        res.putInt("expiryYear", scanResult.expiryYear);
-        res.putString("cvv", scanResult.cvv);
-        res.putString("postalCode", scanResult.postalCode);
-        res.putString("cardholderName", scanResult.cardholderName);
-        promise.resolve(res);
-      } else {
-        promise.reject("user_cancelled", "The user cancelled");
-      }
+    if (requestCode != CARD_IO_SCAN || promise == null) {
+      return;
+    }
+    if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
+      CreditCard scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
+      WritableMap res = Arguments.createMap();
+      res.putString("cardType", scanResult.getCardType().getDisplayName(data.getStringExtra(CardIOActivity.EXTRA_LANGUAGE_OR_LOCALE)));
+      res.putString("cardNumber", scanResult.cardNumber);
+      res.putString("redactedCardNumber", scanResult.getRedactedCardNumber());
+      res.putInt("expiryMonth", scanResult.expiryMonth);
+      res.putInt("expiryYear", scanResult.expiryYear);
+      res.putString("cvv", scanResult.cvv);
+      res.putString("postalCode", scanResult.postalCode);
+      res.putString("cardholderName", scanResult.cardholderName);
+      promise.resolve(res);
+    } else {
+      promise.reject("user_cancelled", "The user cancelled");
     }
   }
 
